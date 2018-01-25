@@ -70,7 +70,14 @@ btrfs filesystem df /BACKUP
 
 umount /BACKUP
 
-# ssh root@${TARGET} 'shutdown -h now'
+# Is somebody logged in?
+logged_in=$(ssh root@${TARGET} 'who')
+if [ -z $logged_in ] ; then
+	echo "Nobody is logged in. Can shutdown."
+	# ssh root@${TARGET} 'shutdown -h now'
+else
+	echo "Somebody is logged in. Cannot shutdown."
+fi
 
 sleep 10
 
