@@ -2,13 +2,16 @@
 
 touch /tmp/bbbb.lock
 
-date 
-echo "START $0" 
-
 if [ -z $(which btrfs) ] ; then
 	echo "Missing btrfs-tools. Giving up."
 	exit
 fi
+
+date 
+echo "START $0" 
+echo "Wait some time for the network and the disk to spin up."
+sleep 30
+
 
 if [ ! -d /BACKUP ] ; then
 	mkdir /BACKUP
@@ -74,7 +77,7 @@ umount /BACKUP
 logged_in=$(ssh root@${TARGET} 'who')
 if [ -z $logged_in ] ; then
 	echo "Nobody is logged in. Can shutdown."
-	# ssh root@${TARGET} 'shutdown -h now'
+	ssh root@${TARGET} 'shutdown -h now'
 else
 	echo "Somebody is logged in. Cannot shutdown."
 fi
