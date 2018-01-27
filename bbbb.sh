@@ -1,9 +1,11 @@
 #!/bin/bash
 
-touch /tmp/bbbb.lock
+set -x 
 
 date 
 echo "START $0" 
+
+sleep 30
 
 if [ -z $(which btrfs) ] ; then
 	echo "Missing btrfs-tools. Giving up."
@@ -70,23 +72,29 @@ btrfs filesystem df /BACKUP
 
 umount /BACKUP
 
-# Is somebody logged in?
-logged_in=$(ssh root@${TARGET} 'who')
-if [ -z $logged_in ] ; then
+# Is somebody logged in remotely?
+logged_in_remote=$(ssh root@${TARGET} 'who')
+if [ -z $logged_in_remote ] ; then
 	echo "Nobody is logged in. Can shutdown."
-	# ssh root@${TARGET} 'shutdown -h now'
+	ssh root@${TARGET} 'shutdown -h now'
 else
-	echo "Somebody is logged in. Cannot shutdown."
+	echo "Somebody is logged in. Refusing shutdown."
 fi
 
-sleep 10
+sleep 1
 
 date
 echo "END $0" 
+/bin/sync
 
-rm /tmp/bbbb.lock
+# Is somebody logged in locally?
+logged_in_local=$(ssh root@${TARGET} 'who')
+if [ -z $logged_in_local ] ; then
+	echo "Nobody is logged in. Can shutdown."
+	/sbin/shutdown -h 
+else
+	echo "Somebody is logged in. Refusing shutdown."
+fi
 
-sync
 
-shutdown -h now
 
