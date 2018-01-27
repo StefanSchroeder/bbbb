@@ -1,12 +1,12 @@
 #!/bin/bash
 
-exit
-
-MAC=$(cat /home/debian/bbbb/mac.txt | tr [a-z] [A-Z])
+MAC=$(cat /hxome/debian/bbbb/mac.txt | tr [a-z] [A-Z])
 if [ -z $MAC ] ;then
 	echo "Cannot find MAC address in mac.txt. Check this out:"
 	nmap -sP 192.168.0.0/24 
 	exit
+else
+	echo "Your configured MAC-address is $MAC"
 fi
 
 #TARGET=$(nmap -sP 192.168.0.0/24 | grep -B2 $MAC | head -1 |awk '{print $6}' | tr -d "[()]")

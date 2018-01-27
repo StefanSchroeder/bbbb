@@ -1,6 +1,12 @@
 #!/bin/bash
 
 set -x 
+MACFILE=/home/debian/bbbb/mac.txt 
+
+if [ $EUID -ne 0 ] ; then
+	echo "You are not root. Giving up."
+	exit
+fi
 
 date 
 echo "START $0" 
@@ -24,7 +30,7 @@ else
 	echo "Directory /backup already exists. Good."
 fi
 
-MAC=$(cat /home/debian/bbbb/mac.txt | tr [a-z] [A-Z])
+MAC=$(cat $MACFILE | tr [a-z] [A-Z])
 if [ -z $MAC ] ;then
 	echo "Cannot find MAC address in mac.txt"
 	exit
@@ -81,10 +87,10 @@ umount /BACKUP
 # Is somebody logged in remotely?
 logged_in_remote=$(ssh root@${TARGET} 'who')
 if [ -z $logged_in_remote ] ; then
-	echo "Nobody is logged in. Can shutdown."
+	echo "Nobody is logged in. Can shutdown remote host."
 	ssh root@${TARGET} 'shutdown -h now'
 else
-	echo "Somebody is logged in. Refusing shutdown."
+	echo "Somebody is logged in remotely. Refusing shutdown of remote host."
 fi
 
 sleep 1
@@ -96,10 +102,10 @@ echo "END $0"
 # Is somebody logged in locally?
 logged_in_local=$(ssh root@${TARGET} 'who')
 if [ -z $logged_in_local ] ; then
-	echo "Nobody is logged in. Can shutdown."
+	echo "Nobody is logged in. Can shutdown local host."
 	/sbin/shutdown -h 
 else
-	echo "Somebody is logged in. Refusing shutdown."
+	echo "Somebody is logged in. Refusing shutdown of local host."
 fi
 
 
