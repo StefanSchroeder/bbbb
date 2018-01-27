@@ -12,6 +12,12 @@ if [ -z $(which btrfs) ] ; then
 	exit
 fi
 
+date 
+echo "START $0" 
+echo "Wait some time for the network and the disk to spin up."
+sleep 30
+
+
 if [ ! -d /BACKUP ] ; then
 	mkdir /BACKUP
 else
