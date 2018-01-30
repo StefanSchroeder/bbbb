@@ -8,11 +8,6 @@ if [ $EUID -ne 0 ] ; then
 	exit
 fi
 
-date 
-echo "START $0" 
-
-sleep 30
-
 if [ -z $(which btrfs) ] ; then
 	echo "Missing btrfs-tools. Giving up."
 	exit
@@ -20,6 +15,7 @@ fi
 
 date 
 echo "START $0" 
+
 echo "Wait some time for the network and the disk to spin up."
 sleep 30
 
@@ -68,15 +64,20 @@ fi
 
 rsync -avz --exclude "*cache" --exclude "*Trash" -e "ssh" root@192.168.0.138:/home /BACKUP 
 
-today=$(date +%Y-%m-%d) 
-# CHECK EXISTENCE FIRST
-SNAP=/BACKUP/SNAPSHOT-$today
+# Usually only day-snapshot.
+today_day=$(date +%d) 
+SNAP=/BACKUP/SNAPSHOT-$today_day
+
+# But every 1st is going to be monthly as well.
+if [ $today_day -eq 1 ] ; then
+	today=$(date +%m-%d) 
+	SNAP=/BACKUP/SNAPSHOT-$today
+fi
 
 if [ -d $SNAP ] ; then
     echo "Deleting existing snapshot $SNAP"
     btrfs subvol delete $SNAP
 fi
-
 btrfs subvolume snapshot /BACKUP/ $SNAP
 
 btrfs device stats /BACKUP
@@ -107,6 +108,4 @@ if [ -z $logged_in_local ] ; then
 else
 	echo "Somebody is logged in. Refusing shutdown of local host."
 fi
-
-
 
