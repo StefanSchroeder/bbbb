@@ -50,6 +50,12 @@ Write debian image to it:
 
 https://debian.beagleboard.org/images/bone-debian-9.2-iot-armhf-2017-10-10-4gb.img.xz
 
+Flasher:
+(https://elinux.org/Beagleboard:BeagleBoneBlack_Debian)
+
+https://rcn-ee.com/rootfs/bb.org/testing/2018-02-04/stretch-iot/BBB-blank-debian-9.3-iot-armhf-2018-02-04-4gb.img.xz
+
+
 I use Win32DiskImager on Windows and dd on Linux.
 
 Change the passwords (for the debian user and the root user) upon first login.
