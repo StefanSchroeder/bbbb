@@ -62,9 +62,9 @@ Change the passwords (for the debian user and the root user) upon first login.
 
     sudo apt update
 
-Install git, wake-on-lan and btrfs-tools.
+Install tools.
 
-    apt get install wakeonlan btrfs-tools ssh
+    sudo apt get install wakeonlan btrfs-tools ssh nmap git
 
     mkdir /BACKUP
 
