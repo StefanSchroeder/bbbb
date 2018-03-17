@@ -111,7 +111,7 @@ echo "END $0"
 /bin/sync
 
 # Is somebody logged in locally?
-logged_in_local=$(who)
+logged_in_local="$(who)"
 if [ -z $logged_in_local ] ; then
 	echo "Nobody is logged in. Can shutdown local host."
 	/sbin/shutdown -h 
