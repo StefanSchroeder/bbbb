@@ -48,27 +48,27 @@ Take 4GB Micro SD-card.
 
 Write debian image to it:
 
-https://debian.beagleboard.org/images/bone-debian-9.2-iot-armhf-2017-10-10-4gb.img.xz
-
 Flasher:
 (https://elinux.org/Beagleboard:BeagleBoneBlack_Debian)
 
 https://rcn-ee.com/rootfs/bb.org/testing/2018-02-04/stretch-iot/BBB-blank-debian-9.3-iot-armhf-2018-02-04-4gb.img.xz
 
 
-I use Win32DiskImager on Windows and dd on Linux.
+Flash the SD-image to the mmc as per the instructions here:
+
+FIXME
 
 Change the passwords (for the debian user and the root user) upon first login.
 
+## Install tools.
+
     sudo apt update
-
-Install git, wake-on-lan and btrfs-tools.
-
-    apt get install wakeonlan btrfs-tools ssh
+    
+    sudo apt get install wakeonlan btrfs-tools ssh nmap git
 
     mkdir /BACKUP
 
-Step (1b): Prepare the external harddrive
+## Prepare the external harddrive
 
 Assuming the external drive is /dev/sda
 
@@ -77,18 +77,15 @@ Assuming the external drive is /dev/sda
     btrfs subvolume create /mnt/btrhome
     umount /mnt
 
-Install Startup-service for backup to crontab: 
-    
-    #!/bin/bash
-    line="@reboot     /usr/local/bin/bbbb.sh"
-    (crontab -l; echo "$line" ) | crontab -
-  
-Step (2): ==========
+## Install Startup-service 
 
-SSH-setup (only once): 
+Configure crontab: 
+
+    #!/bin/bash
+    line="@reboot     bash /home/debian/bbbb/bbbb.sh"
+    (crontab -l; echo "$line" ) | crontab -
+
+## SSH-setup (only once): 
 
     ssh-keygen -t rsa 
     ssh-copyid root@${TARGET}
-
---- end of SSH-setup
-

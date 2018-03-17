@@ -1,5 +1,8 @@
 #!/bin/bash
-
+# Backup home directory from a remote host that is identified
+# by its MAC address to /BACKUP and snapshot it, assuming that
+# it is a btrfs-formatted drive.
+# (c) Stefan Schroeder 2018
 set -x 
 MACFILE=/home/debian/bbbb/mac.txt 
 
@@ -18,7 +21,6 @@ echo "START $0"
 
 echo "Wait some time for the network and the disk to spin up."
 sleep 30
-
 
 if [ ! -d /BACKUP ] ; then
 	mkdir /BACKUP
@@ -39,7 +41,7 @@ sleep 30
 TARGET=$(nmap -sP 192.168.0.0/24 | grep -B2 $MAC | head -1 |awk '{print $6}' | tr -d "[()]")
 
 if [ -z $TARGET ] ; then
-	echo "Cannot find target $TARGET"
+	echo "Cannot find target $MAC on local network."
 	exit
 fi
 
@@ -47,6 +49,7 @@ if $(mount | grep -q BACKUP) ; then
     echo "Already mounted." 
 else 
     mount -t btrfs -o compress=lzo -o subvol=btrhome /dev/sda /BACKUP 
+    sleep 3
 fi
 
 if ping -c 1 $TARGET 
@@ -84,6 +87,7 @@ if [ -d $SNAP ] ; then
     echo "Deleting existing snapshot $SNAP"
     btrfs subvol delete $SNAP
 fi
+
 btrfs subvolume snapshot /BACKUP/ $SNAP
 
 btrfs device stats /BACKUP
@@ -115,4 +119,3 @@ else
 	echo "Somebody is logged in. Refusing shutdown of local host."
 	echo "it is: $logged_in_local"
 fi
-
