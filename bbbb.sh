@@ -62,7 +62,13 @@ if [ ! -d /BACKUP/home ] ; then
     exit
 fi
 
-rsync -avz --exclude "*cache" --exclude "*Trash" -e "ssh" root@192.168.0.138:/home /BACKUP 
+rsync -avz --exclude "*Cache" \
+	--exclude "*cache" \
+	--exclude "*Trash" \
+	--exclude "*.thumbnails" \
+	--exclude "*.Crash Reports" \
+	--exclude "*.temporary" \
+	-e "ssh -o StrictHostkeyChecking=no" root@${TARGET}:/home /BACKUP 
 
 # Usually only day-snapshot.
 today_day=$(date +%d) 
@@ -101,11 +107,12 @@ echo "END $0"
 /bin/sync
 
 # Is somebody logged in locally?
-logged_in_local=$(ssh root@${TARGET} 'who')
+logged_in_local=$(who)
 if [ -z $logged_in_local ] ; then
 	echo "Nobody is logged in. Can shutdown local host."
 	/sbin/shutdown -h 
 else
 	echo "Somebody is logged in. Refusing shutdown of local host."
+	echo "it is: $logged_in_local"
 fi
 
