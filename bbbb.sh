@@ -20,6 +20,11 @@ if [ -z $(which btrfs) ] ; then
 	exit
 fi
 
+if [ ! -f $MACFILE ] ; then
+	echo "Missing mac-address file. Giving up."
+	exit
+fi
+
 date 
 echo "START $0" 
 
@@ -101,7 +106,7 @@ umount /BACKUP
 
 # Is somebody logged in remotely?
 logged_in_remote=$(ssh root@${TARGET} 'who')
-if [ -z $logged_in_remote ] ; then
+if [ -z "$logged_in_remote" ] ; then
 	echo "Nobody is logged in. Can shutdown remote host."
 	ssh root@${TARGET} 'shutdown -h now'
 else
@@ -116,7 +121,7 @@ echo "END $0"
 
 # Is somebody logged in locally?
 logged_in_local="$(who)"
-if [ -z $logged_in_local ] ; then
+if [ -z "$logged_in_local" ] ; then
 	echo "Nobody is logged in. Can shutdown local host."
 	/sbin/shutdown -h 
 else
