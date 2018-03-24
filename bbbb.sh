@@ -3,8 +3,12 @@
 # by its MAC address to /BACKUP and snapshot it, assuming that
 # it is a btrfs-formatted drive.
 # (c) Stefan Schroeder 2018
-set -x 
-MACFILE=/home/debian/bbbb/mac.txt 
+
+USER=pi
+
+################################################################
+
+MACFILE=/home/$USER/bbbb/mac.txt 
 
 if [ $EUID -ne 0 ] ; then
 	echo "You are not root. Giving up."
