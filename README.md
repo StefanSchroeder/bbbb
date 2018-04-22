@@ -88,4 +88,4 @@ Configure crontab:
 ## SSH-setup (only once): 
 
     ssh-keygen -t rsa 
-    ssh-copyid root@${TARGET}
+    ssh-copy-id root@${TARGET}
