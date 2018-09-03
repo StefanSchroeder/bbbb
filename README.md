@@ -87,5 +87,7 @@ Configure crontab:
 
 ## SSH-setup (only once): 
 
+This requires that an SSH-server is running on TARGET and that root-login via SSH is permitted.
+
     ssh-keygen -t rsa 
     ssh-copy-id root@${TARGET}
